@@ -1,23 +1,25 @@
 use wasm_bindgen::prelude::*;
 use spin_sleep::LoopHelper;
-
+use wasm_bindgen_futures::spawn_local;
+use futures_channel::oneshot;
+// wasm-pack build --target nodejs
 #[wasm_bindgen]
-pub async fn test(f: &js_sys::Function) -> Result<JsValue, JsValue>   {
-
+pub async fn test() -> Result<JsValue, JsValue>   {
+  let (tx, rx) = oneshot::channel::<u32>();
   let this = JsValue::null();
+  spawn_local(async {
+    testAsync().await;
+    tx.send(1).unwrap();
+  });
+  return Ok(JsValue::from(rx.await.unwrap()))
+}
+pub async fn testAsync() {
   for i in 0..10000000 {
     println!("{}", i)
   }
-  f.call1(&this, &JsValue::from(String::from("ss")));
-
-  return Ok(this)
 }
-
 #[wasm_bindgen]
-pub async fn test2(f: &js_sys::Function) -> Result<JsValue, JsValue> {
-  let this = JsValue::null();
-
-  f.call1(&this, &JsValue::from(String::from("ss2")));
-
+pub async fn test2() -> Result<JsValue, JsValue> {
+  let this = JsValue::from(2);
   return Ok(this)
 }

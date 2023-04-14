@@ -2,13 +2,12 @@
 name = "wasm"
 version = "0.1.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [lib]
 crate-type = ["cdylib", "rlib"]
-
 [dependencies]
 js-sys = "0.3.61"
 spin_sleep = "1.1.1"
 wasm-bindgen = "0.2.84"
+wasm-bindgen-futures = "0.4"
+futures-core =  { version = '0.3', default-features = false, optional = true }
+futures-channel-preview = "0.3.0-alpha.19"
